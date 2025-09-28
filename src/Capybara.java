@@ -1,14 +1,11 @@
-
-
+import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
-import javax.swing.*;
 
 public class Capybara {
-    private int x, y;
-    private int dx, dy;
+    private int x, y, dx, dy;
     private Image sprite;
-    private int size = 80; // capybara size
+    private int size = 80;
 
     public Capybara(int startX, int startY) {
         this.x = startX;
@@ -18,42 +15,26 @@ public class Capybara {
     }
 
     private void loadSprite() {
-        URL url = getClass().getResource("/Capy.png"); // your capybara image
-        if (url != null) {
-            sprite = new ImageIcon(url).getImage().getScaledInstance(size, size, Image.SCALE_SMOOTH);
-        }
-    }
-
-    public void move(Rectangle bounds) {
-        x += dx;
-        y += dy;
-
-        // stay inside the center bounds
-        if (!bounds.contains(x, y, size, size)) {
-            x -= dx;
-            y -= dy;
-            pickNewDirection();
-        }
-
-        // sometimes change direction
-        if (Math.random() < 0.01) {
-            pickNewDirection();
-        }
+        URL url = getClass().getResource("/Capy.png");
+        if (url != null) sprite = new ImageIcon(url).getImage().getScaledInstance(size, size, Image.SCALE_SMOOTH);
     }
 
     private void pickNewDirection() {
-        dx = (int)(Math.random() * 3) - 1; // -1, 0, 1
-        dy = (int)(Math.random() * 3) - 1;
-        dx *= 2; // speed
-        dy *= 2;
+        dx = ((int)(Math.random()*3)-1) * 2;
+        dy = ((int)(Math.random()*3)-1) * 2;
+    }
+
+    public void move(Rectangle bounds) {
+        x += dx; y += dy;
+        if (!bounds.contains(x, y, size, size)) {
+            x -= dx; y -= dy;
+            pickNewDirection();
+        }
+        if (Math.random() < 0.01) pickNewDirection();
     }
 
     public void draw(Graphics g) {
-        if (sprite != null) {
-            g.drawImage(sprite, x, y, null);
-        } else {
-            g.setColor(Color.ORANGE);
-            g.fillOval(x, y, size, size); // placeholder if image not found
-        }
+        if (sprite != null) g.drawImage(sprite, x, y, null);
+        else { g.setColor(Color.ORANGE); g.fillOval(x, y, size, size); }
     }
 }
