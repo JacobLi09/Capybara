@@ -3,8 +3,11 @@ import java.awt.*;
 
 public class GambleGUI {
     private JPanel panel;
+    private GameScreen gameScreen;  // reference to GameScreen
 
-    public GambleGUI(JPanel container, CardLayout cardLayout) {
+    public GambleGUI(JPanel container, CardLayout cardLayout, GameScreen gameScreen) {
+        this.gameScreen = gameScreen;
+
         panel = new JPanel() {
             Image bg = new ImageIcon(getClass().getResource("/GambleGUI.png")).getImage();
             @Override
@@ -31,7 +34,10 @@ public class GambleGUI {
 
         JButton backBtn = new JButton("Back");
         backBtn.setBounds(20, 20, 150, 50);
-        backBtn.addActionListener(e -> cardLayout.show(container, "GameScreen"));
+        backBtn.addActionListener(e -> {
+            gameScreen.refreshCapybaras(); // refresh capybaras when returning
+            cardLayout.show(container, "GameScreen");
+        });
         panel.add(backBtn);
     }
 

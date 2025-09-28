@@ -38,6 +38,13 @@ public class GameScreen extends JPanel {
         add(gambleButton);
     }
 
+    public void refreshCapybaras() {
+        capybaras.clear();
+        for (int i=0; i < p.getTotalCapyNum(); i++){
+            capybaras.add(new Capybara(810 + (int)(Math.random()*200-100), 440 + (int)(Math.random()*200-100)));
+        }
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

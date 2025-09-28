@@ -16,7 +16,7 @@ public class Main {
 
             Menu menu = new Menu(container, cl);
             GameScreen gameScreen = new GameScreen(container, cl, player);
-            GambleGUI gambleGUI = new GambleGUI(container, cl);
+            GambleGUI gambleGUI = new GambleGUI(container, cl, gameScreen);
             SnakeEyes snakeEyes = new SnakeEyes(player, container, cl);
 
             container.add(menu, "Menu");

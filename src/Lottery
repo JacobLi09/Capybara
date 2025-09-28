@@ -1,0 +1,309 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
+
+public class Lottery {
+
+    private JFrame frame;
+    private JTextField capybaraAmountField;
+    private JTextField[] numberFields;
+    private JTextArea resultArea;
+    private JLabel currentAmountLabel;
+    private int playerCapybaraAmount;
+    private Random random;
+    private DecimalFormat df;
+
+    // Optimized positions for 960x540 window
+    private final int BALANCE_X = 350;
+    private final int BALANCE_Y = 30;
+    private final int BALANCE_WIDTH = 300;
+   
+    private final int NUMBERS_LABEL_X = 350;
+    private final int NUMBERS_LABEL_Y = 80;
+   
+    private final int FIRST_NUMBER_X = 300;
+    private final int NUMBERS_Y = 110;
+    private final int NUMBER_WIDTH = 50;
+    private final int NUMBER_SPACING = 15;
+   
+    private final int AMOUNT_LABEL_X = 350;
+    private final int AMOUNT_LABEL_Y = 150;
+   
+    private final int AMOUNT_FIELD_X = 520;
+    private final int AMOUNT_FIELD_Y = 150;
+    private final int AMOUNT_FIELD_WIDTH = 80;
+   
+    private final int RESULTS_X = 50;
+    private final int RESULTS_Y = 200;
+    private final int RESULTS_WIDTH = 500;
+    private final int RESULTS_HEIGHT = 200;
+   
+    private final int BUTTONS_X = 580;
+    private final int FIRST_BUTTON_Y = 200;
+    private final int BUTTON_WIDTH = 150;
+    private final int BUTTON_HEIGHT = 35;
+    private final int BUTTON_SPACING = 10;
+
+    public Lottery(int currentCapybaraAmount) {
+        this.playerCapybaraAmount = currentCapybaraAmount;
+        this.random = new Random();
+        this.df = new DecimalFormat("#.##");
+        initializeGUI();
+    }
+
+    private void initializeGUI() {
+        frame = new JFrame("Capybara Lottery");
+        frame.setSize(960, 540);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
+
+        JPanel mainPanel = new JPanel() {
+            Image background = new ImageIcon(GambleGUI.class.getResource("Lottery.png")).getImage();
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                if (background != null) {
+                    g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
+                }
+            }
+        };
+        mainPanel.setLayout(null);
+
+        createAndPositionComponents(mainPanel);
+        frame.add(mainPanel);
+        frame.setVisible(true);
+        frame.setLocationRelativeTo(null);
+    }
+
+    private void createAndPositionComponents(JPanel mainPanel) {
+        // Current balance
+        currentAmountLabel = createLabel("Current Capybaras: " + playerCapybaraAmount,
+            BALANCE_X, BALANCE_Y, BALANCE_WIDTH, 25, Font.BOLD, 16, Color.BLACK);
+        mainPanel.add(currentAmountLabel);
+
+        // Numbers label
+        mainPanel.add(createLabel("Enter 1-5 numbers (1-99):",
+            NUMBERS_LABEL_X, NUMBERS_LABEL_Y, 250, 25, Font.BOLD, 14, Color.BLACK));
+
+        // Number fields
+        numberFields = new JTextField[5];
+        for (int i = 0; i < 5; i++) {
+            numberFields[i] = createTextField(
+                FIRST_NUMBER_X + (i * (NUMBER_WIDTH + NUMBER_SPACING)),
+                NUMBERS_Y, NUMBER_WIDTH, 30);
+            mainPanel.add(numberFields[i]);
+        }
+
+        // Amount label
+        mainPanel.add(createLabel("Capybaras to gamble:",
+            AMOUNT_LABEL_X, AMOUNT_LABEL_Y, 160, 25, Font.BOLD, 14, Color.BLACK));
+
+        // Amount field
+        capybaraAmountField = createTextField(AMOUNT_FIELD_X, AMOUNT_FIELD_Y, AMOUNT_FIELD_WIDTH, 30);
+        mainPanel.add(capybaraAmountField);
+
+        // Results area
+        resultArea = new JTextArea();
+        resultArea.setFont(new Font("Arial", Font.PLAIN, 12));
+        resultArea.setEditable(false);
+        resultArea.setLineWrap(true);
+        resultArea.setWrapStyleWord(true);
+        resultArea.setBackground(new Color(255, 255, 255, 220));
+       
+        JScrollPane resultScrollPane = new JScrollPane(resultArea);
+        resultScrollPane.setBorder(BorderFactory.createTitledBorder("Lottery Results"));
+        resultScrollPane.setBounds(RESULTS_X, RESULTS_Y, RESULTS_WIDTH, RESULTS_HEIGHT);
+        mainPanel.add(resultScrollPane);
+
+        // Buttons
+        mainPanel.add(createButton("PLAY", BUTTONS_X, FIRST_BUTTON_Y, Color.GREEN, new PlayButtonListener()));
+        mainPanel.add(createButton("CLEAR", BUTTONS_X, FIRST_BUTTON_Y + BUTTON_SPACING + BUTTON_HEIGHT, Color.ORANGE,
+            e -> clearFields()));
+        mainPanel.add(createButton("EXIT", BUTTONS_X, FIRST_BUTTON_Y + (BUTTON_SPACING + BUTTON_HEIGHT) * 2, Color.RED,
+            e -> returnToGamble()));
+    }
+
+    private JLabel createLabel(String text, int x, int y, int width, int height, int style, int size, Color color) {
+        JLabel label = new JLabel(text);
+        label.setFont(new Font("Arial", style, size));
+        label.setForeground(color);
+        label.setBounds(x, y, width, height);
+        return label;
+    }
+
+    private JTextField createTextField(int x, int y, int width, int height) {
+        JTextField field = new JTextField();
+        field.setFont(new Font("Arial", Font.PLAIN, 12));
+        field.setBounds(x, y, width, height);
+        field.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        return field;
+    }
+
+    private JButton createButton(String text, int x, int y, Color color, ActionListener listener) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Arial", Font.BOLD, 12));
+        button.setBackground(color);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createRaisedBevelBorder());
+        button.setBounds(x, y, BUTTON_WIDTH, BUTTON_HEIGHT);
+        button.addActionListener(listener);
+        return button;
+    }
+
+    private void returnToGamble() {
+        Main.setTotalCapybaraAmount(playerCapybaraAmount);
+        frame.dispose();
+        new GambleGUI(Main.getTotalCapybaraAmount());
+    }
+
+    private void clearFields() {
+        capybaraAmountField.setText("");
+        for (JTextField field : numberFields) {
+            field.setText("");
+        }
+        resultArea.setText("");
+    }
+
+    private void clearInputFields() {
+        capybaraAmountField.setText("");
+        for (JTextField field : numberFields) {
+            field.setText("");
+        }
+    }
+
+    private class PlayButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                if (!validateInput()) return;
+                playLottery();
+            } catch (NumberFormatException ex) {
+                showError("Please enter valid numbers in all fields!");
+            }
+        }
+
+        private boolean validateInput() {
+            if (capybaraAmountField.getText().trim().isEmpty()) {
+                showError("Please enter an amount to gamble!");
+                return false;
+            }
+
+            int gambleAmount = Integer.parseInt(capybaraAmountField.getText().trim());
+            if (gambleAmount <= 0) {
+                showError("Please enter a positive number of capybaras!");
+                return false;
+            }
+            if (gambleAmount > playerCapybaraAmount) {
+                showError("You don't have enough capybaras! You have: " + playerCapybaraAmount);
+                return false;
+            }
+
+            Set<Integer> userNumbers = new HashSet<>();
+            for (int i = 0; i < 5; i++) {
+                String text = numberFields[i].getText().trim();
+                if (!text.isEmpty()) {
+                    int number = Integer.parseInt(text);
+                    if (number < 1 || number > 99) {
+                        showError("Numbers must be between 1 and 99!");
+                        return false;
+                    }
+                    if (!userNumbers.add(number)) {
+                        showError("Duplicate numbers are not allowed!");
+                        return false;
+                    }
+                }
+            }
+
+            if (userNumbers.isEmpty()) {
+                showError("Please enter at least one number!");
+                return false;
+            }
+
+            return true;
+        }
+
+        private void showError(String message) {
+            JOptionPane.showMessageDialog(frame, message, "Input Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void playLottery() {
+        int gambleAmount = Integer.parseInt(capybaraAmountField.getText().trim());
+        ArrayList<Integer> userNumbers = getUserNumbers();
+
+        StringBuilder result = new StringBuilder();
+        result.append("LOTTERY RESULTS\n\n");
+        result.append("Your numbers: ").append(userNumbers).append("\n");
+        result.append("Amount gambled: ").append(gambleAmount).append(" capybaras\n\n");
+
+        ArrayList<Integer> winningNumbers = generateWinningNumbers(userNumbers.size());
+        ArrayList<Integer> matches = findMatches(userNumbers, winningNumbers);
+
+        result.append("Winning numbers: ").append(winningNumbers).append("\n\n");
+
+        if (matches.isEmpty()) {
+            result.append("No matches! You lost ").append(gambleAmount).append(" capybaras.\n");
+            playerCapybaraAmount -= gambleAmount;
+        } else {
+            int winnings = calculateWinnings(gambleAmount, matches.size(), result);
+            playerCapybaraAmount = playerCapybaraAmount - gambleAmount + winnings;
+        }
+
+        result.append("\nNew balance: ").append(playerCapybaraAmount).append(" capybaras");
+        resultArea.setText(result.toString());
+        clearInputFields();
+        updateBalanceDisplay();
+    }
+
+    private ArrayList<Integer> getUserNumbers() {
+        ArrayList<Integer> numbers = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            String text = numberFields[i].getText().trim();
+            if (!text.isEmpty()) {
+                numbers.add(Integer.parseInt(text));
+            }
+        }
+        return numbers;
+    }
+
+    private ArrayList<Integer> generateWinningNumbers(int count) {
+        ArrayList<Integer> numbers = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            numbers.add(random.nextInt(99) + 1);
+        }
+        return numbers;
+    }
+
+    private ArrayList<Integer> findMatches(ArrayList<Integer> userNumbers, ArrayList<Integer> winningNumbers) {
+        ArrayList<Integer> matches = new ArrayList<>();
+        for (int num : userNumbers) {
+            if (winningNumbers.contains(num)) {
+                matches.add(num);
+            }
+        }
+        return matches;
+    }
+
+    private int calculateWinnings(int gambleAmount, int matchCount, StringBuilder result) {
+        double multiplier = 1 + (0.1 + random.nextDouble() * 0.4);
+        double winMultiplier = multiplier * matchCount;
+        int winnings = (int) (gambleAmount * winMultiplier);
+
+        result.append("Matches: ").append(matchCount).append("\n");
+        result.append("Multiplier: ").append(df.format(winMultiplier)).append("x\n");
+        result.append("You won: ").append(winnings).append(" capybaras!\n");
+        return winnings;
+    }
+
+    private void updateBalanceDisplay() {
+        currentAmountLabel.setText("Current Capybaras: " + playerCapybaraAmount);
+        Main.setTotalCapybaraAmount(playerCapybaraAmount);
+    }
+}
