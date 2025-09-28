@@ -32,6 +32,8 @@ public class Player {
         this.totalCapyNum -= num;
     }
 
+
+
     
     
 }

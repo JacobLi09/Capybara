@@ -18,11 +18,14 @@ public class Main {
             GameScreen gameScreen = new GameScreen(container, cl, player);
             GambleGUI gambleGUI = new GambleGUI(container, cl, gameScreen);
             SnakeEyes snakeEyes = new SnakeEyes(player, container, cl);
+            Lottery lottery = new Lottery(player, container, cl);
+
 
             container.add(menu, "Menu");
             container.add(gameScreen, "GameScreen");
             container.add(gambleGUI.getPanel(), "GambleGUI");
             container.add(snakeEyes, "SnakeEyes");
+            container.add(lottery, "Lottery");
 
             cl.show(container, "Menu");
             frame.setLocationRelativeTo(null);

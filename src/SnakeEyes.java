@@ -30,10 +30,26 @@ public class SnakeEyes extends JPanel {
         rollBtn.addActionListener(e -> placeWager());
         add(rollBtn);
 
-        JButton backBtn = new JButton("Back");
-        backBtn.setBounds(20, 20, 150, 50);
-        backBtn.addActionListener(e -> cardLayout.show(container, "GambleGUI"));
-        add(backBtn);
+        // Back button
+        try {
+            URL backUrl = getClass().getResource("/Back.png");
+            JButton backButton;
+            if (backUrl != null) {
+                ImageIcon originalIcon = new ImageIcon(backUrl);
+                Image scaledImage = originalIcon.getImage().getScaledInstance(150, 60, Image.SCALE_SMOOTH);
+                backButton = new JButton(new ImageIcon(scaledImage));
+            } else {
+                backButton = new JButton("Back");
+            }
+            backButton.setBounds(20, 20, 150, 60);
+            backButton.setBorderPainted(false);
+            backButton.setContentAreaFilled(false);
+            backButton.setFocusPainted(false);
+            backButton.addActionListener(e -> cardLayout.show(container, "GambleGUI"));
+            add(backButton);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void rollDice() {
