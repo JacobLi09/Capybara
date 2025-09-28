@@ -19,24 +19,25 @@ public class GambleGUI {
         };
         panel.setLayout(null);
 
-        // Buttons
+        // Lottery button
         JButton lotteryBtn = new JButton();
-        lotteryBtn.setBounds(80, 60, 675, 350);
+        lotteryBtn.setBounds(80, 250, 675, 350);
         lotteryBtn.setBorderPainted(false);
         lotteryBtn.setContentAreaFilled(false);
         lotteryBtn.setFocusPainted(false);
         lotteryBtn.addActionListener(e -> cardLayout.show(container, "Lottery"));
         panel.add(lotteryBtn);
 
+        // SnakeEyes button
         JButton snakeEyesBtn = new JButton();
-        snakeEyesBtn.setBounds(800, 50, 675, 350);
+        snakeEyesBtn.setBounds(800, 250, 675, 350);
         snakeEyesBtn.setBorderPainted(false);
         snakeEyesBtn.setContentAreaFilled(false);
         snakeEyesBtn.setFocusPainted(false);
         snakeEyesBtn.addActionListener(e -> cardLayout.show(container, "SnakeEyes"));
         panel.add(snakeEyesBtn);
 
-        // Back button
+        // Back button (top-left)
         try {
             URL backUrl = getClass().getResource("/Back.png");
             JButton backButton;
@@ -53,6 +54,30 @@ public class GambleGUI {
             backButton.setFocusPainted(false);
             backButton.addActionListener(e -> cardLayout.show(container, "GameScreen"));
             panel.add(backButton);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // New bottom-left button
+        try {
+            URL newBtnUrl = getClass().getResource("/NewButton.png"); // replace with your texture
+            JButton newButton;
+            if (newBtnUrl != null) {
+                ImageIcon originalIcon = new ImageIcon(newBtnUrl);
+                Image scaledImage = originalIcon.getImage().getScaledInstance(150, 60, Image.SCALE_SMOOTH);
+                newButton = new JButton(new ImageIcon(scaledImage));
+            } else {
+                newButton = new JButton("New Button");
+            }
+            newButton.setBounds(20, 880 - 60 - 20, 150, 60); // bottom-left
+            newButton.setBorderPainted(false);
+            newButton.setContentAreaFilled(true);
+            newButton.setFocusPainted(false);
+            newButton.addActionListener(e -> {
+                // action for the new button
+                System.out.println("New bottom-left button clicked");
+            });
+            panel.add(newButton);
         } catch (Exception e) {
             e.printStackTrace();
         }

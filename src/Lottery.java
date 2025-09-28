@@ -42,51 +42,51 @@ public class Lottery extends JPanel {
         // Current balance
         currentAmountLabel = new JLabel("Current Capybaras: " + p.getTotalCapyNum());
         currentAmountLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        currentAmountLabel.setBounds(300, 30, 400, 30);
+        currentAmountLabel.setBounds(300, 350, 400, 30);
         bgPanel.add(currentAmountLabel);
 
         // Numbers label
         JLabel numbersLabel = new JLabel("Enter 1-5 numbers (1-99):");
-        numbersLabel.setBounds(300, 80, 250, 25);
+        numbersLabel.setBounds(300, 400, 250, 25);
         bgPanel.add(numbersLabel);
 
         // Number fields
         numberFields = new JTextField[5];
         for (int i = 0; i < 5; i++) {
             numberFields[i] = new JTextField();
-            numberFields[i].setBounds(300 + (i * 60), 110, 50, 30);
+            numberFields[i].setBounds(300 + (i * 60), 450, 50, 30);
             bgPanel.add(numberFields[i]);
         }
 
         // Amount field
         JLabel amountLabel = new JLabel("Capybaras to gamble:");
-        amountLabel.setBounds(300, 150, 200, 25);
+        amountLabel.setBounds(300, 500, 200, 25);
         bgPanel.add(amountLabel);
 
         capybaraAmountField = new JTextField();
-        capybaraAmountField.setBounds(500, 150, 80, 30);
+        capybaraAmountField.setBounds(500, 400, 80, 30);
         bgPanel.add(capybaraAmountField);
 
         // Results
         resultArea = new JTextArea();
         resultArea.setEditable(false);
         JScrollPane scroll = new JScrollPane(resultArea);
-        scroll.setBounds(50, 200, 500, 200);
+        scroll.setBounds(50, 500, 500, 200);
         bgPanel.add(scroll);
 
         // Buttons
         JButton playBtn = new JButton("PLAY");
-        playBtn.setBounds(600, 200, 150, 40);
+        playBtn.setBounds(600, 400, 150, 40);
         playBtn.addActionListener(e -> playLottery());
         bgPanel.add(playBtn);
 
         JButton clearBtn = new JButton("CLEAR");
-        clearBtn.setBounds(600, 250, 150, 40);
+        clearBtn.setBounds(600, 450, 150, 40);
         clearBtn.addActionListener(e -> clearFields());
         bgPanel.add(clearBtn);
 
         JButton backBtn = new JButton("BACK");
-        backBtn.setBounds(600, 300, 150, 40);
+        backBtn.setBounds(600, 500, 150, 40);
         backBtn.addActionListener(e -> cardLayout.show(container, "GambleGUI"));
         bgPanel.add(backBtn);
     }
